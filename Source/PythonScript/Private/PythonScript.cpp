@@ -32,7 +32,7 @@ void FPythonScriptModule::StartupModule()
 	FString Python3path;
 	FString Python39path;
 #if PLATFORM_WINDOWS
-	LibraryPath = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/PythonScriptLibrary/Win64/Python.dll"));
+	LibraryPath = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/PythonScriptLibrary/Win64/PythonLibrary.dll"));
 	Python3path = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/PythonScriptLibrary/Win64/python3.dll"));
 	Python39path = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/PythonScriptLibrary/Win64/python39.dll"));
 #elif PLATFORM_MAC

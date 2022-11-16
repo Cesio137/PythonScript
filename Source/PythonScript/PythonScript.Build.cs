@@ -13,8 +13,8 @@ public class PythonScript : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
-                "$(PluginDir)/Source/ThirdParty/Python/Win64/include",
-                "$(PluginDir)/Source/ThirdParty/Python"
+                "$(PluginDir)/Source/ThirdParty/PythonLibrary/Win64/include",
+                "$(PluginDir)/Source/ThirdParty/PythonLibrary"
 			}
 			);
 				
