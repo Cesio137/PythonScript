@@ -5,20 +5,25 @@
 
 void UPythonScript::Initialize()
 {
-	InitializeInterpreter();
+	python.Initialize();
 }
 
 void UPythonScript::Finalize()
 {
-	FinalizeInterpreter();
+	python.Finalize();
 }
 
-bool UPythonScript::AppendSystemPath(const FString Path)
+bool UPythonScript::bIsRunning()
 {
-	return AppendSysPath(TCHAR_TO_ANSI(*Path));
+	return python.bIsRunning();
+}
+
+void UPythonScript::AppendSystemPath(const FString Path)
+{
+	python.AppendSysPath(TCHAR_TO_ANSI(*Path));
 }
 
 FString UPythonScript::GetSystemPath()
 {
-	return ANSI_TO_TCHAR(GetSysPath());
+	return ANSI_TO_TCHAR(python.GetSysPath());
 }

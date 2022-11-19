@@ -8,6 +8,8 @@
 
 #define LOCTEXT_NAMESPACE "FUPythonModule"
 
+using namespace Python;
+
 void FUPythonModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
@@ -34,7 +36,7 @@ void FUPythonModule::StartupModule()
 	if (PythonLibraryHandle && Python3LibraryHandle && Python39LibraryHandle)
 	{
 		// Call the test function in the third party library that opens a message box
-		PythonLibraryFunction();
+		Python::PythonLibraryFunction();
 	}
 	else
 	{

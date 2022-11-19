@@ -1,58 +1,67 @@
+#include "PythonLibrary.h"
+
 #if defined _WIN32 || defined _WIN64
-#include <Windows.h>
-#include <locale>
-#include <iostream>
-#include <string>
-#include <sstream>
-
-#pragma push_macro("CONSTEXPR")
-#undef CONSTEXPR
-#pragma push_macro("dynamic_cast")
-#undef dynamic_cast
-#pragma push_macro("check")
-#undef check
-#pragma push_macro("PI")
-#undef PI
-#include "pybind11/pybind11.h"
-#include "pybind11/embed.h"
-#pragma pop_macro("PI")
-#pragma pop_macro("check")
-#pragma pop_macro("dynamic_cast")
-#pragma pop_macro("CONSTEXPR")
-
-    #define PYTHONLIBRARY_EXPORT __declspec(dllexport)
-#else
+    
+#elif defined __linux__
     #include <stdio.h>
 #endif
 
-#ifndef PYTHONLIBRARY_EXPORT
-    #define PYTHONLIBRARY_EXPORT
-#endif
-
-namespace py = pybind11;
-using namespace py::literals;
-using namespace std;
-
-PYTHONLIBRARY_EXPORT void PythonLibraryFunction()
+void Python::PythonLibraryFunction()
 {
 #if defined _WIN32 || defined _WIN64
-        MessageBox(NULL, TEXT("Loaded Python 3.9.13."), TEXT("Python 3.9.13 Plugin"), MB_OK);
+    MessageBox(NULL, TEXT("Loaded Python 3.9.13 plugin"), TEXT("Python 3.9.13 Plugin"), MB_OK);
 #else
-        printf("Loaded ExampleLibrary from Third Party Plugin sample");
+    printf("Loaded ExampleLibrary from Third Party Plugin sample");
 #endif
 }
 
-PYTHONLIBRARY_EXPORT void InitializeInterpreter()
+void Python::Library::Initialize()
 {
-	py::scoped_interpreter guard{};
+    py::scoped_interpreter guard{};
+    for (int i = 0; i < SysPath.size(); i++)
+    {
+        std::string paths = std::string("import sys \n") + "sys.path.append('"+ SysPath[i]+"')";
+        py::exec(paths.c_str());          
+    }
+   
 }
 
-PYTHONLIBRARY_EXPORT void FinalizeInterpreter()
+void Python::Library::Finalize()
 {
-	py::finalize_interpreter();
+    py::finalize_interpreter();
 }
 
-PYTHONLIBRARY_EXPORT wstring widen(const string& str)
+bool Python::Library::bIsRunning()
+{
+    return Py_IsInitialized() > 0;
+}
+
+void Python::Library::AppendSysPath(const char* syspath)
+{
+    ClearSysPath();
+    SysPath.assign(syspath);    
+}
+
+void Python::Library::ClearSysPath()
+{
+    SysPath.empty();
+}
+
+const char* Python::Library::GetSysPath()
+{
+    py::initialize_interpreter();
+    if (Py_IsInitialized() == 0)
+    {
+        return nullptr;
+    }
+
+    py::module_ sys = py::module_::import("sys");
+    py::object paths = sys.attr("path");
+
+    return paths.cast<std::string>().c_str();
+}
+
+wstring Python::Library::widen(const string& str)
 {
     wostringstream wstm;
     const ctype<wchar_t>& ctfacet = use_facet<ctype<wchar_t>>(wstm.getloc());
@@ -62,7 +71,7 @@ PYTHONLIBRARY_EXPORT wstring widen(const string& str)
     return wstm.str();
 }
 
-PYTHONLIBRARY_EXPORT string narrow(const wstring& str)
+string Python::Library::narrow(const wstring& str)
 {
     ostringstream stm;
 
@@ -76,30 +85,3 @@ PYTHONLIBRARY_EXPORT string narrow(const wstring& str)
         stm << ctfacet.narrow(str[i], 0);
     return stm.str();
 }
-
-PYTHONLIBRARY_EXPORT bool AppendSysPath(const char* syspath)
-{
-	if (Py_IsInitialized() == 0)
-	{
-		return false;
-	}
-
-    Py_SetPath(widen(syspath).c_str());
-
-    return true;
-}
-
-PYTHONLIBRARY_EXPORT const char* GetSysPath()
-{
-    if (Py_IsInitialized() == 0)
-    {
-        return nullptr;
-    }
-
-    py::module sys = py::module_::import("sys");
-    py::object paths = sys.attr("path");
-
-    return paths.cast<std::string>().c_str();
-}
-
-

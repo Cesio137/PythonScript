@@ -7,6 +7,8 @@
 #include "PythonLibrary.h"
 #include "PythonScript.generated.h"
 
+using namespace Python;
+
 /**
  * 
  */
@@ -14,6 +16,9 @@ UCLASS(Blueprintable)
 class UPYTHON_API UPythonScript : public UObject
 {
 	GENERATED_BODY()
+
+protected:
+	Python::Library python;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Python 3.9.13 || Interpreter")
@@ -23,7 +28,10 @@ public:
 	void Finalize();
 
 	UFUNCTION(BlueprintCallable, Category = "Python 3.9.13 || Interpreter")
-	bool AppendSystemPath(const FString Path);
+	bool bIsRunning();
+
+	UFUNCTION(BlueprintCallable, Category = "Python 3.9.13 || Interpreter")
+	void AppendSystemPath(const FString Path);
 
 	UFUNCTION(BlueprintCallable, Category = "Python 3.9.13 || Interpreter")
 	FString GetSystemPath();

@@ -1,21 +1,72 @@
+#pragma once
+#define PYTHONLIBRARY_EXPORT
+
 #if defined _WIN32 || defined _WIN64
+#include <Windows.h>
+#include <locale>
+#include <iostream>
 #include <string>
-#define PYTHONLIBRARY_IMPORT __declspec(dllimport)
-#elif defined __linux__
-#define PYTHONLIBRARY_IMPORT __attribute__((visibility("default")))
+#include <sstream>
+#include <array>
+
+#pragma push_macro("CONSTEXPR")
+#undef CONSTEXPR
+#pragma push_macro("dynamic_cast")
+#undef dynamic_cast
+#pragma push_macro("check")
+#undef check
+#pragma push_macro("PI")
+#undef PI
+#include "pybind11/pybind11.h"
+#include "pybind11/embed.h"
+#include "Python.h"
+#pragma pop_macro("PI")
+#pragma pop_macro("check")
+#pragma pop_macro("dynamic_cast")
+#pragma pop_macro("CONSTEXPR")
+
+#ifndef PYTHONLIBRARY_EXPORT
+#define PYTHONLIBRARY __declspec(dllexport)
 #else
-#define PYTHONLIBRARY_IMPORT
+#define PYTHONLIBRARY __declspec(dllimport)
+#endif
 #endif
 
+#if defined __linux__
+
+#ifndef PYTHONLIBRARY_EXPORT
+#define PYTHONLIBRARY 
+#else
+#define PYTHONLIBRARY_IMPORT __attribute__((visibility("default")))
+#endif
+#endif
+
+namespace py = pybind11;
+using namespace py::literals;
 using namespace std;
 
-PYTHONLIBRARY_IMPORT void PythonLibraryFunction();
-PYTHONLIBRARY_IMPORT void InitializeInterpreter();
-PYTHONLIBRARY_IMPORT void FinalizeInterpreter();
-PYTHONLIBRARY_IMPORT wstring widen(const string& str);  // convert const char* to const wchar_t*
-PYTHONLIBRARY_IMPORT string narrow(const wstring& str); // convert const wchar_t* to const char*
-PYTHONLIBRARY_IMPORT bool AppendSysPath(const char* syspath);
-PYTHONLIBRARY_IMPORT const char* GetSysPath();
+namespace Python
+{
+	PYTHONLIBRARY void PythonLibraryFunction();
+	
+	class PYTHONLIBRARY Library
+	{
+	public:
+		void Initialize();
+		void Finalize();
+		bool bIsRunning();
+		void AppendSysPath(const char* syspath);
+		void ClearSysPath();
+		const char* GetSysPath();
+		wstring widen(const string& str);  // convert const char* to const wchar_t*
+		string narrow(const wstring& str); // convert const wchar_t* to const char*
+
+    private:
+        array<const char*, 4> SysPath;
+	};
+	
+	
+}
 
 
 
