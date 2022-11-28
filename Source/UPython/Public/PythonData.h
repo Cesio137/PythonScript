@@ -3,13 +3,38 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PythonData.generated.h"
 
 /**
  * 
  */
-class UPYTHON_API PythonData
+USTRUCT(BlueprintType)
+struct FPythonPackage
 {
-public:
-	PythonData();
-	~PythonData();
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString Name;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString Version;
+
+
+};
+
+USTRUCT(BlueprintType)
+struct FPythonOutdatedPackage
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString Name;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString CurrentVersion;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString LastVersion;
+
+
 };

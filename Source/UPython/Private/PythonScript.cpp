@@ -3,27 +3,26 @@
 
 #include "PythonScript.h"
 
-void UPythonScript::Initialize()
+TArray<FString> UPythonScript::GetSysPath()
 {
-	python.Initialize();
+	TArray<FString> DirList;
+	py::scoped_interpreter guard{};
+
+	py::module_ sys = py::module_::import("sys");
+	sys.attr("path").attr("append")(TCHAR_TO_UTF8(*GetEnvPath()));
+	py::list listpath = sys.attr("path");
+	for (int i = 0; i < listpath.size(); i++)
+	{
+		std::string syspath = listpath[i].cast<std::string>();
+		DirList.Add(UTF8_TO_TCHAR(syspath.c_str()));
+	}
+
+	return DirList;
 }
 
-void UPythonScript::Finalize()
+FString UPythonScript::GetEnvPath()
 {
-	python.Finalize();
-}
-
-bool UPythonScript::bIsRunning()
-{
-	return python.bIsRunning();
-}
-
-void UPythonScript::AppendSystemPath(const FString Path)
-{
-	python.AppendSysPath(TCHAR_TO_ANSI(*Path));
-}
-
-FString UPythonScript::GetSystemPath()
-{
-	return ANSI_TO_TCHAR(python.GetSysPath());
+	FString BaseDir = IPluginManager::Get().FindPlugin("UPython")->GetBaseDir();
+	FString EnvPath = FPaths::Combine(BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Lib/site-packages"));
+	return EnvPath;
 }

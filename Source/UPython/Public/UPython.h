@@ -14,7 +14,7 @@ public:
 
 private:
 	/** Handle to the test dll we will load */
-	void*	PythonLibraryHandle;
+	void* PythonLibraryHandle;
 	void* Python3LibraryHandle;
-	void* Python39LibraryHandle;
+	void* Python310LibraryHandle;
 };

@@ -20,20 +20,20 @@ void FUPythonModule::StartupModule()
 	// Add on the relative location of the third party dll and load it
 	FString LibraryPath;
 	FString Python3Path;
-	FString Python39Path;
+	FString Python310Path;
 #if PLATFORM_WINDOWS
 	LibraryPath = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/UPythonLibrary/Win64/PythonLibrary.dll"));
 	Python3Path = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/UPythonLibrary/Win64/python3.dll"));
-	Python39Path = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/UPythonLibrary/Win64/python39.dll"));
+	Python310Path = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/UPythonLibrary/Win64/python310.dll"));
 #elif PLATFORM_MAC
     LibraryPath = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Mac/Release/libExampleLibrary.dylib"));
 #endif // PLATFORM_WINDOWS
 
 	PythonLibraryHandle = !LibraryPath.IsEmpty() ? FPlatformProcess::GetDllHandle(*LibraryPath) : nullptr;
 	Python3LibraryHandle = !Python3Path.IsEmpty() ? FPlatformProcess::GetDllHandle(*Python3Path) : nullptr;
-	Python39LibraryHandle = !Python39Path.IsEmpty() ? FPlatformProcess::GetDllHandle(*Python39Path) : nullptr;
+	Python310LibraryHandle = !Python310Path.IsEmpty() ? FPlatformProcess::GetDllHandle(*Python310Path) : nullptr;
 
-	if (PythonLibraryHandle && Python3LibraryHandle && Python39LibraryHandle)
+	if (PythonLibraryHandle && Python3LibraryHandle && Python310LibraryHandle)
 	{
 		// Call the test function in the third party library that opens a message box
 		Python::PythonLibraryFunction();
@@ -56,8 +56,8 @@ void FUPythonModule::ShutdownModule()
 	FPlatformProcess::FreeDllHandle(Python3LibraryHandle);
 	Python3LibraryHandle = nullptr;
 
-	FPlatformProcess::FreeDllHandle(Python39LibraryHandle);
-	Python39LibraryHandle = nullptr;
+	FPlatformProcess::FreeDllHandle(Python310LibraryHandle);
+	Python310LibraryHandle = nullptr;
 }
 
 #undef LOCTEXT_NAMESPACE

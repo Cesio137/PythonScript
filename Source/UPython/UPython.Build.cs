@@ -12,7 +12,7 @@ public class UPython : ModuleRules
 			new string[] {
 				// ... add public include paths required here ...
 				"$(PluginDir)/Source/ThirdParty/UPythonLibrary",
-				"$(PluginDir)/Source/ThirdParty/UPythonLibrary/Win64/include"
+				"$(PluginDir)/Source/ThirdParty/UPythonLibrary/Win64/Include"
                 
 			}
 			);
@@ -30,6 +30,9 @@ public class UPython : ModuleRules
 			{
 				"Core",
                 "CoreUObject",
+				"Engine",
+                "Json", 
+                "JsonUtilities", 
 				"UPythonLibrary",
 				"Projects"
                 // ... add other public dependencies that you statically link with here ...

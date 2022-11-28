@@ -3,10 +3,4 @@
 
 #include "PythonData.h"
 
-PythonData::PythonData()
-{
-}
 
-PythonData::~PythonData()
-{
-}

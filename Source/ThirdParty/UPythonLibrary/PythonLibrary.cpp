@@ -9,11 +9,38 @@
 void Python::PythonLibraryFunction()
 {
 #if defined _WIN32 || defined _WIN64
-    MessageBox(NULL, TEXT("Loaded Python 3.9.13 plugin"), TEXT("Python 3.9.13 Plugin"), MB_OK);
+    MessageBox(NULL, TEXT("Loaded Python 3.10.8 plugin"), TEXT("Python 3.10.8 Plugin"), MB_OK);
 #else
     printf("Loaded ExampleLibrary from Third Party Plugin sample");
 #endif
 }
+
+wstring Python::widen(const string& str)
+{
+    wostringstream wstm;
+    const ctype<wchar_t>& ctfacet = use_facet<ctype<wchar_t>>(wstm.getloc());
+    for (size_t i = 0; i < str.size(); ++i) {
+        wstm << ctfacet.widen(str[i]);
+    }
+    return wstm.str();
+}
+
+string Python::narrow(const wstring& str)
+{
+    ostringstream stm;
+
+    // Incorrect code from the link
+    // const ctype<char>& ctfacet = use_facet<ctype<char>>(stm.getloc());
+
+    // Correct code.
+    const ctype<wchar_t>& ctfacet = use_facet<ctype<wchar_t>>(stm.getloc());
+
+    for (size_t i = 0; i < str.size(); ++i)
+        stm << ctfacet.narrow(str[i], 0);
+    return stm.str();
+}
+
+/*
 
 void Python::Library::Initialize()
 {
@@ -85,3 +112,5 @@ string Python::Library::narrow(const wstring& str)
         stm << ctfacet.narrow(str[i], 0);
     return stm.str();
 }
+
+*/

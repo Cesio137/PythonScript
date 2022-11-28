@@ -48,24 +48,8 @@ using namespace std;
 namespace Python
 {
 	PYTHONLIBRARY void PythonLibraryFunction();
-	
-	class PYTHONLIBRARY Library
-	{
-	public:
-		void Initialize();
-		void Finalize();
-		bool bIsRunning();
-		void AppendSysPath(const char* syspath);
-		void ClearSysPath();
-		const char* GetSysPath();
-		wstring widen(const string& str);  // convert const char* to const wchar_t*
-		string narrow(const wstring& str); // convert const wchar_t* to const char*
-
-    private:
-        array<const char*, 4> SysPath;
-	};
-	
-	
+	PYTHONLIBRARY wstring widen(const string& str);
+	PYTHONLIBRARY string narrow(const wstring& str);
 }
 
 
