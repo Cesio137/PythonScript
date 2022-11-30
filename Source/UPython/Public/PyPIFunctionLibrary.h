@@ -18,22 +18,25 @@ class UPYTHON_API UPyPIFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "PyPI || Package")
-	static void InstallPyPI(FString PyPI);
+	UFUNCTION(BlueprintCallable, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
+	static int InstallPyPI(FString PyPI, FString &Output, FString &ErrorOutput);
 
-	UFUNCTION(BlueprintCallable, Category = "PyPI || Package")
-	static void InstallByVersion(FString PyPI, FString Version);
+	UFUNCTION(BlueprintCallable, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
+	static int InstallByVersion(FString PyPI, FString Version, FString& Output, FString& ErrorOutput);
 
-	UFUNCTION(BlueprintCallable, Category = "PyPI || Package")
-	static void RemovePyPI(FString PyPI);
+	UFUNCTION(BlueprintCallable, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
+	static int RemovePyPI(FString PyPI, FString& Output, FString& ErrorOutput);
 
-	UFUNCTION(BlueprintCallable, Category = "PyPI || Package")
-	static void UpgradePyPI(FString PyPI);
+	UFUNCTION(BlueprintCallable, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
+	static int UpgradePyPI(FString PyPI, FString& Output, FString& ErrorOutput);
 	
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PyPI || Package")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
 	static TArray<FPythonPackage> GetPyPI();
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PyPI || Package")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
 	static TArray<FPythonOutdatedPackage> GetOutdatedPyPI();
+
+	UFUNCTION(BlueprintCallable, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
+	static void MessageDialog(const FText Title, const FText Message);
 
 };

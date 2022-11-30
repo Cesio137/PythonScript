@@ -3,44 +3,56 @@
 
 #include "PyPIFunctionLibrary.h"
 
-void UPyPIFunctionLibrary::InstallPyPI(FString PyPI)
+int UPyPIFunctionLibrary::InstallPyPI(FString PyPI, FString& Output, FString& ErrorOutput)
 {
 	FString BaseDir = IPluginManager::Get().FindPlugin("UPython")->GetBaseDir();
 	FString Python = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts/python.exe"));
 	FString WorkDir = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts"));
-	FString Args = "-m pip install " + PyPI;
+	FString Args = " -m pip install " + PyPI;
+	int ReturnCode;
 
-	FPlatformProcess::ExecProcess(*Python, *Args, nullptr, nullptr, nullptr, *WorkDir);
+	FPlatformProcess::ExecProcess(*Python, *Args, &ReturnCode, &Output, &ErrorOutput, *WorkDir);
+
+	return ReturnCode;
 }
 
-void UPyPIFunctionLibrary::InstallByVersion(FString PyPI, FString Version)
+int UPyPIFunctionLibrary::InstallByVersion(FString PyPI, FString Version, FString& Output, FString& ErrorOutput)
 {
 	FString BaseDir = IPluginManager::Get().FindPlugin("UPython")->GetBaseDir();
 	FString Python = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts/python.exe"));
 	FString WorkDir = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts"));
-	FString Args = "-m pip install " + PyPI + "==" + Version;
+	FString Args = " -m pip install " + PyPI + "==" + Version;
+	int ReturnCode;
 
-	FPlatformProcess::ExecProcess(*Python, *Args, nullptr, nullptr, nullptr, *WorkDir);
+	FPlatformProcess::ExecProcess(*Python, *Args, &ReturnCode, &Output, &ErrorOutput, *WorkDir);
+
+	return ReturnCode;
 }
 
-void UPyPIFunctionLibrary::RemovePyPI(FString PyPI)
+int UPyPIFunctionLibrary::RemovePyPI(FString PyPI, FString& Output, FString& ErrorOutput)
 {
 	FString BaseDir = IPluginManager::Get().FindPlugin("UPython")->GetBaseDir();
 	FString Python = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts/python.exe"));
 	FString WorkDir = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts"));
-	FString Args = "-m pip uninstall " + PyPI;
+	FString Args = " -m pip uninstall " + PyPI + " -y";
+	int ReturnCode;
 
-	FPlatformProcess::ExecProcess(*Python, *Args, nullptr, nullptr, nullptr, *WorkDir);
+	FPlatformProcess::ExecProcess(*Python, *Args, &ReturnCode, &Output, &ErrorOutput, *WorkDir);
+
+	return ReturnCode;
 }
 
-void UPyPIFunctionLibrary::UpgradePyPI(FString PyPI)
+int UPyPIFunctionLibrary::UpgradePyPI(FString PyPI, FString& Output, FString& ErrorOutput)
 {
 	FString BaseDir = IPluginManager::Get().FindPlugin("UPython")->GetBaseDir();
 	FString Python = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts/python.exe"));
 	FString WorkDir = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts"));
-	FString Args = "-m pip install --upgrade " + PyPI;
+	FString Args = " -m pip install --upgrade " + PyPI;
+	int ReturnCode;
 
-	FPlatformProcess::ExecProcess(*Python, *Args, nullptr, nullptr, nullptr, *WorkDir);
+	FPlatformProcess::ExecProcess(*Python, *Args, &ReturnCode, &Output, &ErrorOutput, *WorkDir);
+
+	return ReturnCode;
 }
 
 TArray<FPythonPackage> UPyPIFunctionLibrary::GetPyPI()
@@ -49,7 +61,7 @@ TArray<FPythonPackage> UPyPIFunctionLibrary::GetPyPI()
 	FString BaseDir = IPluginManager::Get().FindPlugin("UPython")->GetBaseDir();
 	FString Python = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts/python.exe"));
 	FString WorkDir = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/UPythonLibrary/Win64/Scripts"));
-	FString Args = "-m pip list --format=json";
+	FString Args = " -m pip list --format=json";
 	FString Output;
 
 	FPlatformProcess::ExecProcess(*Python, *Args, nullptr, &Output, nullptr, *WorkDir);
@@ -112,4 +124,9 @@ TArray<FPythonOutdatedPackage> UPyPIFunctionLibrary::GetOutdatedPyPI()
 	}
 
 	return Package;
+}
+
+void UPyPIFunctionLibrary::MessageDialog(const FText Title, const FText Message)
+{
+	FMessageDialog::Open(EAppMsgType::Ok, Message, &Title);
 }
