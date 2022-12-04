@@ -130,3 +130,37 @@ void UPyPIFunctionLibrary::MessageDialog(const FText Title, const FText Message)
 {
 	FMessageDialog::Open(EAppMsgType::Ok, Message, &Title);
 }
+
+bool UPyPIFunctionLibrary::SetLocalVariables(const UPythonScript* PythonObject, const FProperty* LocalVariables)
+{
+	check(0);
+	return false;
+}
+
+DEFINE_FUNCTION(UPyPIFunctionLibrary::execSetLocalVariables)
+{
+	Stack.Step(Stack.Object, NULL);
+
+	P_GET_OBJECT_REF(FProperty, LocalVariables);
+
+	FProperty* LocalVariablesProperty = CastField<FProperty>(Stack.MostRecentProperty);
+
+	void* LocalVariablesPtr = Stack.MostRecentPropertyAddress;
+
+	Stack.Step(Stack.Object, NULL);
+
+	P_GET_OBJECT_REF(UPythonScript, PythonObject);
+
+	P_FINISH;
+
+	if(!PythonObject)
+	{
+		*(bool*)RESULT_PARAM = false;
+	}
+
+	bool result = PythonObject->PythonStruct_impl(LocalVariablesProperty, LocalVariablesPtr);
+
+	*(bool*)RESULT_PARAM = result;
+}
+
+

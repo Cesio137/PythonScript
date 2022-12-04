@@ -6,26 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "Interfaces/IPluginManager.h"
 #include "PythonLibrary.h"
-#pragma push_macro("CONSTEXPR")
-#undef CONSTEXPR
-#pragma push_macro("dynamic_cast")
-#undef dynamic_cast
-#pragma push_macro("check")
-#undef check
-#pragma push_macro("PI")
-#undef PI
-#include "pybind11/pybind11.h"
-#include "pybind11/embed.h"
-#include "Python.h"
-#pragma pop_macro("PI")
-#pragma pop_macro("check")
-#pragma pop_macro("dynamic_cast")
-#pragma pop_macro("CONSTEXPR")
 #include "PythonScript.generated.h"
-
-namespace py = pybind11;
-using namespace py::literals;
-using namespace Python;
 
 /**
  * 
@@ -34,17 +15,25 @@ UCLASS(Blueprintable)
 class UPYTHON_API UPythonScript : public UObject
 {
 	GENERATED_BODY()
-
-protected:
-	
+	UPythonScript();
 
 public:
-
 	UFUNCTION(BlueprintCallable, Category = "Python 3.10.8 || Interpreter")
+	void RunPythonScript(const FText Script);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure,Category = "Python 3.10.8 || Interpreter")
 	TArray<FString> GetSysPath();
-
+	
+	bool PythonStruct_impl(FProperty* Property, void* StructPtr);
+	
 private:
+	Python python;
+	void ParsePythonProperty(FProperty* Property, void* ValuePtr);
+	void ParsePythonListProperty(FProperty* Property, void* ValuePtr);
+
 	UFUNCTION()
 	FString GetEnvPath();
+
 };
+
 

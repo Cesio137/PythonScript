@@ -1,6 +1,4 @@
 #pragma once
-#define PYTHONLIBRARY_EXPORT
-
 #if defined _WIN32 || defined _WIN64
 #include <Windows.h>
 #include <locale>
@@ -25,32 +23,30 @@
 #pragma pop_macro("dynamic_cast")
 #pragma pop_macro("CONSTEXPR")
 
-#ifndef PYTHONLIBRARY_EXPORT
-#define PYTHONLIBRARY __declspec(dllexport)
-#else
-#define PYTHONLIBRARY __declspec(dllimport)
-#endif
-#endif
-
-#if defined __linux__
-
-#ifndef PYTHONLIBRARY_EXPORT
-#define PYTHONLIBRARY 
-#else
+#define PYTHONLIBRARY_IMPORT __declspec(dllimport)
+#elif defined __linux__
 #define PYTHONLIBRARY_IMPORT __attribute__((visibility("default")))
-#endif
+#else
+#define PYTHONLIBRARY_IMPORT
 #endif
 
 namespace py = pybind11;
 using namespace py::literals;
 using namespace std;
 
-namespace Python
+class PYTHONLIBRARY_IMPORT Python
 {
-	PYTHONLIBRARY void PythonLibraryFunction();
-	PYTHONLIBRARY wstring widen(const string& str);
-	PYTHONLIBRARY string narrow(const wstring& str);
-}
+public:
+    static void PythonLibraryFunction();
+    void RunPythonScript(const char* Script);
+    void SetEnviromentPath(const char* Path);
+    py::dict Local;
+    py::list Array;
+    array<const char*, 12> GetSystemPath();
+    const char* EnviromentPath;
+    wstring widen(const string& str);
+    string narrow(const wstring& str);
+};
 
 
 

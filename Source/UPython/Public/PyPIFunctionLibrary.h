@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Interfaces/IPluginManager.h"
+#include "PythonScript.h"
 #include "PythonData.h"
 #include "Json.h"
 #include "PyPIFunctionLibrary.generated.h"
@@ -38,5 +39,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "PyPI || Package", meta = (BlueprintInternalUseOnly = "true"))
 	static void MessageDialog(const FText Title, const FText Message);
+
+	UFUNCTION(BlueprintCallable, Category = "Python 3.10.8 || Interpreter", CustomThunk, meta = (CustomStructureParam = "LocalVariables"))
+	bool SetLocalVariables(const UPythonScript* PythonObject, const UProperty* LocalVariables);
+	DECLARE_FUNCTION(execSetLocalVariables);
 
 };
